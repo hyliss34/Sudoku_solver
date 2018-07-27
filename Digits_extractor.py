@@ -4,50 +4,7 @@ import numpy as np
 from pytesseract import image_to_string
 
 
-def convert_when_colour(colour, img):
-    """Dynamically converts an image to colour if the input colour is a tuple and the image is grayscale."""
-    if len(colour) == 3:
-        if len(img.shape) == 2:
-            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-        elif img.shape[2] == 1:
-            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-    return img
-
-
-def display_points(in_img, points, radius=5, colour=(0, 0, 255)):
-    """Draws circular points on an image."""
-    img = in_img.copy()
-
-    # Dynamically change to a colour image if necessary
-    if len(colour) == 3:
-        if len(img.shape) == 2:
-            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-        elif img.shape[2] == 1:
-            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-
-    for point in points:
-        img = cv2.circle(img, tuple(int(x) for x in point), radius, colour, -1)
-    show_image(img)
-    return img
-
-
-def display_rects(in_img, rects, colour=(0, 0, 255)):
-    """Displays rectangles on the image."""
-    img = convert_when_colour(colour, in_img.copy())
-    for rect in rects:
-        img = cv2.rectangle(img, tuple(int(x) for x in rect[0]), tuple(int(x) for x in rect[1]), colour)
-    show_image(img)
-    return img
-
-
-def display_contours(in_img, contours, colour=(0, 0, 255), thickness=2):
-    """Displays contours on the image."""
-    img = convert_when_colour(colour, in_img.copy())
-    img = cv2.drawContours(img, contours, -1, colour, thickness)
-    show_image(img)
-
-
-def pre_process_image(img, skip_dilate=False):
+def _pre_process_image(img, skip_dilate=False):
     """Uses a blurring function, adaptive thresholding and dilation to expose the main features of an image."""
 
     # Gaussian blur with a kernal size (height, width) of 9.
@@ -69,7 +26,7 @@ def pre_process_image(img, skip_dilate=False):
     return proc
 
 
-def find_corners_of_largest_polygon(img):
+def _find_corners_of_largest_polygon(img):
     """Finds the 4 extreme corners of the largest contour in the image."""
     _, contours, h = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)  # Find contours
     contours = sorted(contours, key=cv2.contourArea, reverse=True)  # Sort by area, descending
@@ -92,14 +49,14 @@ def find_corners_of_largest_polygon(img):
     return [polygon[top_left][0], polygon[top_right][0], polygon[bottom_right][0], polygon[bottom_left][0]]
 
 
-def distance_between(p1, p2):
+def _distance_between(p1, p2):
     """Returns the scalar distance between two points"""
     a = p2[0] - p1[0]
     b = p2[1] - p1[1]
     return np.sqrt((a ** 2) + (b ** 2))
 
 
-def crop_and_warp(img, crop_rect):
+def _crop_and_warp(img, crop_rect):
     """Crops and warps a rectangular section from an image into a square of similar size."""
 
     # Rectangle described by top left, top right, bottom right and bottom left points
@@ -110,10 +67,10 @@ def crop_and_warp(img, crop_rect):
 
     # Get the longest side in the rectangle
     side = max([
-        distance_between(bottom_right, top_right),
-        distance_between(top_left, bottom_left),
-        distance_between(bottom_right, bottom_left),
-        distance_between(top_left, top_right)
+        _distance_between(bottom_right, top_right),
+        _distance_between(top_left, bottom_left),
+        _distance_between(bottom_right, bottom_left),
+        _distance_between(top_left, top_right)
     ])
 
     # Describe a square with side of the calculated length, this is the new perspective we want to warp to
@@ -126,7 +83,7 @@ def crop_and_warp(img, crop_rect):
     return cv2.warpPerspective(img, m, (int(side), int(side)))
 
 
-def infer_grid(img):
+def _infer_grid(img):
     """Infers 81 cell grid from a square image."""
     squares = []
     side = img.shape[:1]
@@ -141,12 +98,12 @@ def infer_grid(img):
     return squares
 
 
-def cut_from_rect(img, rect):
+def _cut_from_rect(img, rect):
     """Cuts a rectangle from an image using the top left and bottom right points."""
     return img[int(rect[0][1]):int(rect[1][1]), int(rect[0][0]):int(rect[1][0])]
 
 
-def scale_and_centre(img, size, margin=0, background=0):
+def _scale_and_centre(img, size, margin=0, background=0):
     """Scales and centres an image onto a new background square."""
     h, w = img.shape[:2]
 
@@ -181,7 +138,7 @@ def scale_and_centre(img, size, margin=0, background=0):
     return cv2.resize(img, (size, size))
 
 
-def find_largest_feature(inp_img, scan_tl=None, scan_br=None):
+def _find_largest_feature(inp_img, scan_tl=None, scan_br=None):
     """
     Uses the fact the `floodFill` function returns a bounding box of the area it filled to find the biggest
     connected pixel structure in the image. Fills this structure in white, reducing the rest to black.
@@ -238,17 +195,17 @@ def find_largest_feature(inp_img, scan_tl=None, scan_br=None):
     return img, np.array(bbox, dtype='float32'), seed_point
 
 
-def extract_digit(img, rect, size):
+def _extract_digit(img, rect, size):
     """Extracts a digit (if one exists) from a Sudoku square."""
 
-    digit = cut_from_rect(img, rect)  # Get the digit box from the whole square
+    digit = _cut_from_rect(img, rect)  # Get the digit box from the whole square
 
     # Use fill feature finding to get the largest feature in middle of the box
     # Margin used to define an area in the middle we would expect to find a pixel belonging to the digit
     h, w = digit.shape[:2]
     margin = int(np.mean([h, w]) / 2.5)
-    _, bbox, seed = find_largest_feature(digit, [margin, margin], [w - margin, h - margin])
-    digit = cut_from_rect(digit, bbox)
+    _, bbox, seed = _find_largest_feature(digit, [margin, margin], [w - margin, h - margin])
+    digit = _cut_from_rect(digit, bbox)
 
     # Scale and pad the digit so that it fits a square of the digit size we're using for machine learning
     w = bbox[1][0] - bbox[0][0]
@@ -256,30 +213,40 @@ def extract_digit(img, rect, size):
 
     # Ignore any small bounding boxes
     if w > 0 and h > 0 and (w * h) > 100 and len(digit) > 0:
-        return scale_and_centre(digit, size, 4)
+        return _scale_and_centre(digit, size, 4)
     else:
         return np.zeros((size, size), np.uint8)
 
 
-def get_digits(img, squares, size):
+def _get_digits(img, squares, size):
     """Extracts digits from their cells and builds an array"""
     digits = []
-    img = pre_process_image(img.copy(), skip_dilate=True)
+    img = _pre_process_image(img.copy(), skip_dilate=True)
     for square in squares:
         digits.append(extract_digit(img, square, size))
     return digits
 
 
 def parse_grid(path):
+    """
+    Grid parser that convert an image of a sudoku board to a list a images of the digits on the board
+    :param path:
+    :return:
+    """
     original = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-    processed = pre_process_image(original)
-    corners = find_corners_of_largest_polygon(processed)
-    cropped = crop_and_warp(original, corners)
-    squares = infer_grid(cropped)
-    digits = get_digits(cropped, squares, 56)
+    processed = _pre_process_image(original)
+    corners = _find_corners_of_largest_polygon(processed)
+    cropped = _crop_and_warp(original, corners)
+    squares = _infer_grid(cropped)
+    digits = _get_digits(cropped, squares, 56)
     return digits
 
 def digits_to_board(digits):
+    """
+    Convert the extracted single digit image to a string
+    :param digits: a list a images that represent a single digit
+    :return:
+    """
     sudoku_board = []
     for digit in digits:
         text = image_to_string(digit, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
@@ -294,7 +261,8 @@ def get_board(path):
     """
 
     :param path: a path to a file
-    :return: a np.ndarray representing the board
+    :type path: str
+    :return: a np.ndarray representing the sudoku board
     """
     digits = parse_grid(path)
     return digits_to_board(digits)

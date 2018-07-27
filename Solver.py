@@ -3,7 +3,14 @@
 from pulp import *
 
 def solve_sudoku(img):
-    print(img)
+    """
+
+    :param img: an image grayscale
+    :type img: np.ndarray
+    :return: Two files
+        - Sudoku.lp containing the choice made for the resolution
+        - sudokouout.txt the solved grid
+    """
     # A list of strings from "1" to "9" is created
     Sequence = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
