@@ -2,9 +2,9 @@ before_script:
   - echo 'start'
   - apt-get update -qy
   - apt-get install -y python3-dev python3-pip
-  - apt-get install autoconf automake g++ libtool libleptonica-dev make pkg-config
-  - sudo apt install tesseract-ocr
-  - apt install libtesseract-dev
+  - apt-get -y install autoconf automake g++ libtool libleptonica-dev make pkg-config
+  - apt-get -y install tesseract-ocr
+  - apt-get -y install libtesseract-dev
   - pip3 install -r requirements.txt
   - echo 'Preparation done !'
 
