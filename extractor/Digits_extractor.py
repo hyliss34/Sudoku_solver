@@ -2,6 +2,9 @@ import cv2
 import operator
 import numpy as np
 from pytesseract import image_to_string
+import pyocr
+import pyocr.builders
+import PIL
 
 
 def _pre_process_image(img, skip_dilate=False):
@@ -238,6 +241,7 @@ def parse_grid(path):
         raise Exception("No file named %s"%path)
 
     processed = _pre_process_image(original)
+
     corners = _find_corners_of_largest_polygon(processed)
     cropped = _crop_and_warp(original, corners)
     squares = _infer_grid(cropped)
@@ -251,8 +255,12 @@ def digits_to_board(digits):
     :return:
     """
     sudoku_board = []
+    tools = pyocr.get_available_tools()
+    tool = tools[0]
     for digit in digits:
-        text = image_to_string(digit, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
+        #text = image_to_string(digit, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
+        PIL.Image.fromarray(digit, mode='L').save("tmp.png")
+        text = tool.image_to_string(PIL.Image.open("tmp.png"), builder=pyocr.builders.DigitBuilder())
         sudoku_board.append(text)
 
     sudoku_board = np.array(sudoku_board).reshape((9,9))
@@ -267,5 +275,4 @@ def get_board(path):
     :type path: str
     :return: a np.ndarray representing the sudoku board
     """
-    digits = parse_grid(path)
-    return digits_to_board(digits)
+    return digits_to_board(parse_grid(path))

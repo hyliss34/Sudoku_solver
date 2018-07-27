@@ -76,7 +76,7 @@ def solve_sudoku(img, output_name = "sudokusolution"):
 
     sudokuout = open(output_name+'.txt', 'w')
 
-    while True:
+    for i in range(200):
         prob.solve()
         # The status of the solution is printed to the screen
         print("Status:", LpStatus[prob.status])
@@ -103,9 +103,11 @@ def solve_sudoku(img, output_name = "sudokusolution"):
                            if value(choices[v][r][c]) == 1]) <= 80
         # If a new optimal solution cannot be found, we end the program
         else:
-            break
-    sudokuout.close()
+            sudokuout.close()
+            construct_grid_image(data, output_name + ".png")
+            # The location of the solutions is give to the user
+            print("Solutions Written to " + output_name + ".txt and " + output_name + ".png")
+            return True
+    print("The solution has not been found avec 200 try !")
+    return False
 
-    construct_grid_image(data, output_name+".png")
-    # The location of the solutions is give to the user
-    print("Solutions Written to "+output_name+".txt and "+output_name+".png")

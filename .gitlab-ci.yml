@@ -7,4 +7,5 @@ before_script:
 
 test:
   script:
+    - ls -l
     - python -m unittest tests/full_test.py
