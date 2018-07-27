@@ -4,7 +4,7 @@ This a 'full' sudoku solver that uses opencv and tesseract for extracting the su
 
 To install just do:
 
-```bash
+```python
 pip install -r requirements.txt
 ```
 ```ruby
