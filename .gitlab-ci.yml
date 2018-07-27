@@ -1,11 +1,11 @@
 before_script:
   - echo 'start'
   - apt-get update -qy
-  - apt-get install -y python-dev python-pip
-  - pip install -r requirements.txt
+  - apt-get install -y python3-dev python3-pip
+  - pip3 install -r requirements.txt
   - echo 'Preparation done !'
 
 test:
   script:
     - ls -l
-    - python -m unittest tests/full_test.py
+    - python3 -m unittest tests/full_test.py
