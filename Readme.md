@@ -18,7 +18,7 @@ You can set the output file name
 ```
 python Solve.py 'file.png' outputfilename
 ```
-For more infos you can type
+For more infos you can typee
 
 ```
 python Solve.py --help
