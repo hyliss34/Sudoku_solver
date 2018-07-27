@@ -4,20 +4,18 @@ from pulp import *
 import pprint
 import os
 import numpy as np
-from Draw_png import construct_grid_image
+from image_drawing.Draw_png import construct_grid_image
 
-def solve_sudoku(img):
+def solve_sudoku(img, output_name = "sudokusolution"):
     """
 
+    :param output_name:
     :param img: an image grayscale
     :type img: np.ndarray
     :return: Two files
         - Sudoku.lp containing the choice made for the resolution
         - sudokouout.txt the solved grid
     """
-    print("Start solving")
-    print("Your board is:")
-    pprint.pprint(img)
     # A list of strings from "1" to "9" is created
     Sequence = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
@@ -74,9 +72,9 @@ def solve_sudoku(img):
         os.mkdir("logs")
         prob.writeLP("logs/Sudoku.lp")
 
-    # A file called sudokuout.txt is created/overwritten for writing to
     data = np.empty((9, 9), dtype=int)
-    sudokuout = open('sudokuout.txt', 'w')
+
+    sudokuout = open(output_name+'.txt', 'w')
 
     while True:
         prob.solve()
@@ -108,6 +106,6 @@ def solve_sudoku(img):
             break
     sudokuout.close()
 
-    construct_grid_image(data, "sudokuout.png")
+    construct_grid_image(data, output_name+".png")
     # The location of the solutions is give to the user
-    print("Solutions Written to sudokuout.txt")
+    print("Solutions Written to "+output_name+".txt and "+output_name+".png")

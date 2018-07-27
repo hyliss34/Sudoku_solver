@@ -1,5 +1,4 @@
 from PIL import Image, ImageDraw, ImageFont
-import numpy as np
 
 
 def construct_grid_image(data, name="sudoku.png", width=300, height=300, fontsize=12):

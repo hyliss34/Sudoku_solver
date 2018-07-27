@@ -1,0 +1,10 @@
+before_script:
+  - echo 'start'
+  - apt-get update -qy
+  - apt-get install -y python-dev python-pip
+  - pip install -r requirements.txt
+  - echo 'Preparation done !'
+
+test:
+  script:
+    - python -m unittest tests/full_test.py

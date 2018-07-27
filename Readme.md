@@ -8,8 +8,18 @@ To install just do:
 pip install -r requirements.txt
 ```
 
-Then run tthe solver on the sudoku you want to solve
+Then run the solver on the sudoku you want to solve
 
 ```
 python Solve.py 'file.png'
+```
+You can set the output file name
+
+```
+python Solve.py 'file.png' outputfilename
+```
+For more infos you can type
+
+```
+python Solve.py --help
 ```
