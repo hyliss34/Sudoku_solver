@@ -3,6 +3,8 @@
 from pulp import *
 import pprint
 import os
+import numpy as np
+from Draw_png import construct_grid_image
 
 def solve_sudoku(img):
     """
@@ -73,6 +75,7 @@ def solve_sudoku(img):
         prob.writeLP("logs/Sudoku.lp")
 
     # A file called sudokuout.txt is created/overwritten for writing to
+    data = np.empty((9, 9), dtype=int)
     sudokuout = open('sudokuout.txt', 'w')
 
     while True:
@@ -91,6 +94,7 @@ def solve_sudoku(img):
                             if c == "1" or c == "4" or c == "7":
                                 sudokuout.write("| ")
                             sudokuout.write(v + " ")
+                            data[int(r)-1, int(c)-1] = int(v)
                             if c == "9":
                                 sudokuout.write("|\n")
             sudokuout.write("+-------+-------+-------+\n\n")
@@ -104,5 +108,6 @@ def solve_sudoku(img):
             break
     sudokuout.close()
 
+    construct_grid_image(data, "sudokuout.png")
     # The location of the solutions is give to the user
     print("Solutions Written to sudokuout.txt")
