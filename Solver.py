@@ -1,6 +1,8 @@
 
 # Import PuLP modeler functions
 from pulp import *
+import pprint
+import os
 
 def solve_sudoku(img):
     """
@@ -11,6 +13,9 @@ def solve_sudoku(img):
         - Sudoku.lp containing the choice made for the resolution
         - sudokouout.txt the solved grid
     """
+    print("Start solving")
+    print("Your board is:")
+    pprint.pprint(img)
     # A list of strings from "1" to "9" is created
     Sequence = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
@@ -61,7 +66,11 @@ def solve_sudoku(img):
                     raise ke
 
     # The problem data is written to an .lp file
-    prob.writeLP("Sudoku.lp")
+    if os.path.exists('logs'):
+        prob.writeLP("logs/Sudoku.lp")
+    else:
+        os.mkdir("logs")
+        prob.writeLP("logs/Sudoku.lp")
 
     # A file called sudokuout.txt is created/overwritten for writing to
     sudokuout = open('sudokuout.txt', 'w')

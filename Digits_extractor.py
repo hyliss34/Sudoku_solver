@@ -223,7 +223,7 @@ def _get_digits(img, squares, size):
     digits = []
     img = _pre_process_image(img.copy(), skip_dilate=True)
     for square in squares:
-        digits.append(extract_digit(img, square, size))
+        digits.append(_extract_digit(img, square, size))
     return digits
 
 
@@ -234,11 +234,14 @@ def parse_grid(path):
     :return:
     """
     original = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    if original is None:
+        raise Exception("No file named %s"%path)
+
     processed = _pre_process_image(original)
     corners = _find_corners_of_largest_polygon(processed)
     cropped = _crop_and_warp(original, corners)
     squares = _infer_grid(cropped)
-    digits = _get_digits(cropped, squares, 56)
+    digits = _get_digits(cropped, squares, 28)
     return digits
 
 def digits_to_board(digits):
