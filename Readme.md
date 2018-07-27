@@ -4,8 +4,17 @@ This a 'full' sudoku solver that uses opencv and tesseract for extracting the su
 
 To install just do:
 
+```bash
 pip install -r requirements.txt
+```
+```ruby
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html
+```
 
 Then run the main.py file
 
+```
 python main.py
+```
