@@ -3,8 +3,7 @@ language: python
 sudo: enabled
 python:
   - "3.6"
-  - "3.7"
-  - "pypy3.5"
+  - "3.7_DEV"
 
 before_install:
   - echo 'start'
