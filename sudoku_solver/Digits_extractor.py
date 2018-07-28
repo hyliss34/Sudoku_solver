@@ -230,8 +230,12 @@ def _get_digits(img, squares, size):
 def parse_grid(path):
     """
     Grid parser that convert an image of a sudoku board to a list a images of the digits on the board
-    :param path:
-    :return:
+
+    Args:
+        path (:obj:`str`): The path to the file
+
+    Returns:
+        :obj:`list`: The list of the digits as matrices representing the image of them.
     """
     original = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
     if original is None:
@@ -248,8 +252,12 @@ def parse_grid(path):
 def digits_to_board(digits):
     """
     Convert the extracted single digit image to a string
-    :param digits: a list a images that represent a single digit
-    :return:
+
+    Args:
+        digits (:obj:`list`): A list of digits that are :obj:`np.ndarray`
+
+    Returns:
+        :obj:`np.array`: The array of the extracted board
     """
     sudoku_board = []
     for digit in digits:
@@ -263,9 +271,12 @@ def digits_to_board(digits):
 
 def get_board(path):
     """
+    A wrapper that simply take an image file and extract the sudoku board from it.
 
-    :param path: a path to a file
-    :type path: str
-    :return: a np.ndarray representing the sudoku board
+    Args:
+        path (:obj:`str`): The path to the file
+
+    Return:
+        :obj:`np.ndarray`: The extracted sudoku board as a matrice
     """
     return digits_to_board(parse_grid(path))

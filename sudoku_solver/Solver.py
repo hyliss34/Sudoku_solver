@@ -1,7 +1,6 @@
 
 # Import PuLP modeler functions
 from pulp import *
-import pprint
 import os
 import numpy as np
 from . import Draw_png
@@ -9,12 +8,19 @@ from . import Draw_png
 def solve_sudoku(img, output_name = "sudokusolution", output_path = 'output/'):
     """
 
-    :param output_name:
-    :param img: an image grayscale
-    :type img: np.ndarray
-    :return: Two files
-        - Sudoku.lp containing the choice made for the resolution
-        - sudokouout.txt the solved grid
+    A sudoku solver using Linear programming module pulp.
+    The solver is quite similar to the one presented in their
+    `documentation <https://pythonhosted.org/PuLP/CaseStudies/a_sudoku_problem.html>`_
+
+    Args:
+        img (:obj:`np.ndarray`): An array that contain the sudoku board.
+        output_name (:obj:`str`, optional): The name of the output files (.png and .txt). Defaults to *sudokusolution*
+        output_path (:obj:`str`, optional): The path of the folder where the logs and results are going to be saved.
+        Defaults to *output/*.
+
+    Returns:
+        A boolean to succed or fail and create two files.
+
     """
     # A list of strings from "1" to "9" is created
     Sequence = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]

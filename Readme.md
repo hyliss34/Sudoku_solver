@@ -11,15 +11,16 @@ pip install -r requirements.txt
 Then run the solver on the sudoku you want to solve
 
 ```
-python Solve.py 'file.png'
+python -m sudoku_solver.Solve 'file.png' 
 ```
 You can set the output file name
 
 ```
-python Solve.py 'file.png' outputfilename
+python -m sudoku_solver.Solve 'file.png' outputfilename
 ```
 For more infos you can typee
 
 ```
-python Solve.py --help
+python -m sudoku_solver.Solve --help
+
 ```
