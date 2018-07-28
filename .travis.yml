@@ -20,3 +20,5 @@ install:
 
 script:
   - python -m unittest tests/full_test.py
+  - cd doc
+  - make html
