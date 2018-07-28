@@ -1,5 +1,5 @@
-from solver.Solver import solve_sudoku
-from extractor.Digits_extractor import get_board
+from . import Solver
+from . import Digits_extractor
 import sys
 
 
@@ -18,13 +18,13 @@ def main():
         outputname is just a name without file extension, if blank the files will be named 'sudokusolution'""")
         return
     else:
-        sudoku = get_board(file)
+        sudoku = Digits_extractor.get_board(file)
 
     try:
         output = sys.argv[2]
-        solve_sudoku(sudoku, output)
+        Solver.solve_sudoku(sudoku, output)
     except Exception :
-        solve_sudoku(sudoku)
+        Solver.solve_sudoku(sudoku)
 
 
 #def solve(file, output="sudokusolution"):

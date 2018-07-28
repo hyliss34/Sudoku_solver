@@ -1,4 +1,12 @@
-before_script:
+
+language: python
+sudo: enabled
+python:
+  - "3.6"
+  - "3.7"
+  - "pypy3.5"
+
+before_install:
   - echo 'start'
   - apt-get update -qy
   - apt-get install -y python3-dev python3-pip
@@ -8,7 +16,8 @@ before_script:
   - pip3 install -r requirements.txt
   - echo 'Preparation done !'
 
-test:
-  script:
-    - ls -l
-    - python3 -m unittest tests/full_test.py
+install:
+  - pip install -r requirements.txt
+
+script:
+  - python -m unittest tests/full_test.py

@@ -11,7 +11,7 @@ def construct_grid_image(data, name="sudoku.png", width=300, height=300, fontsiz
 
     # Boxes and numbers
     font_size = fontsize
-    font = ImageFont.truetype('arial.ttf', int(font_size))
+    font = ImageFont.truetype('Arial.ttf', int(font_size))
     start_x, start_y = 0, 0
     n = 9
     for line in range(n):

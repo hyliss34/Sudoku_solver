@@ -4,9 +4,9 @@ from pulp import *
 import pprint
 import os
 import numpy as np
-from image_drawing.Draw_png import construct_grid_image
+from . import Draw_png
 
-def solve_sudoku(img, output_name = "sudokusolution"):
+def solve_sudoku(img, output_name = "sudokusolution", output_path = 'output/'):
     """
 
     :param output_name:
@@ -66,17 +66,19 @@ def solve_sudoku(img, output_name = "sudokusolution"):
                     raise ke
 
     # The problem data is written to an .lp file
-    if os.path.exists('logs'):
-        prob.writeLP("logs/Sudoku.lp")
+    if os.path.exists(output_path+'logs'):
+        prob.writeLP(output_path+"logs/Sudoku.lp")
     else:
-        os.mkdir("logs")
-        prob.writeLP("logs/Sudoku.lp")
+        os.mkdir(output_path)
+        os.mkdir(output_path+'/logs')
+        prob.writeLP(output_path+"logs/Sudoku.lp")
 
     data = np.empty((9, 9), dtype=int)
 
-    sudokuout = open(output_name+'.txt', 'w')
 
-    for i in range(200):
+    sudokuout = open(output_path+output_name+'.txt', 'w')
+
+    for i in range(50):
         prob.solve()
         # The status of the solution is printed to the screen
         print("Status:", LpStatus[prob.status])
@@ -96,18 +98,15 @@ def solve_sudoku(img, output_name = "sudokusolution"):
                             if c == "9":
                                 sudokuout.write("|\n")
             sudokuout.write("+-------+-------+-------+\n\n")
-            # The constraint is added that the same solution cannot be returned again
+            return True
+        else:
             prob += lpSum([choices[v][r][c] for v in Vals
                            for r in Rows
                            for c in Cols
                            if value(choices[v][r][c]) == 1]) <= 80
-        # If a new optimal solution cannot be found, we end the program
-        else:
-            sudokuout.close()
-            construct_grid_image(data, output_name + ".png")
-            # The location of the solutions is give to the user
-            print("Solutions Written to " + output_name + ".txt and " + output_name + ".png")
-            return True
-    print("The solution has not been found avec 200 try !")
     return False
+    sudokuout.close()
+    Draw_png.construct_grid_image(data, output_path+output_name + ".png")
+    # The location of the solutions is give to the user
+    print("Solutions Written to " + output_name + ".txt and " + output_name + ".png")
 

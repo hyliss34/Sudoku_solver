@@ -2,9 +2,6 @@ import cv2
 import operator
 import numpy as np
 from pytesseract import image_to_string
-import pyocr
-import pyocr.builders
-import PIL
 
 
 def _pre_process_image(img, skip_dilate=False):
@@ -255,12 +252,8 @@ def digits_to_board(digits):
     :return:
     """
     sudoku_board = []
-    tools = pyocr.get_available_tools()
-    tool = tools[0]
     for digit in digits:
-        #text = image_to_string(digit, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
-        PIL.Image.fromarray(digit, mode='L').save("tmp.png")
-        text = tool.image_to_string(PIL.Image.open("tmp.png"), builder=pyocr.builders.DigitBuilder())
+        text = image_to_string(digit, config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
         sudoku_board.append(text)
 
     sudoku_board = np.array(sudoku_board).reshape((9,9))
