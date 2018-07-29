@@ -47,6 +47,10 @@ extensions = [
     'sphinx.ext.napoleon',
 ]
 
+# Napoleon settings
+napoleon_google_docstring = True
+napoleon_numpy_docstring = False
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -73,6 +77,9 @@ exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
+nitpicky = True
+nitpick_ignore = [('py:class', 'list'), ('py:obj', 'ndarray')]
+
 
 
 # -- Options for HTML output -------------------------------------------------

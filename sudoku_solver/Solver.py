@@ -7,19 +7,18 @@ from . import Draw_png
 
 def solve_sudoku(img, output_name = "sudokusolution", output_path = 'output/'):
     """
-
     A sudoku solver using Linear programming module pulp.
     The solver is quite similar to the one presented in their
     `documentation <https://pythonhosted.org/PuLP/CaseStudies/a_sudoku_problem.html>`_
 
     Args:
-        img (:obj:`np.ndarray`): An array that contain the sudoku board.
-        output_name (:obj:`str`, optional): The name of the output files (.png and .txt). Defaults to *sudokusolution*
-        output_path (:obj:`str`, optional): The path of the folder where the logs and results are going to be saved.
+        img (`ndarray`): An array that contain the sudoku board.
+        output_name (`str`, optional): The name of the output files (.png and .txt). Defaults to sudokusolution
+        output_path (`str`, optional): The path of the folder where the logs and results are going to be saved.\
         Defaults to *output/*.
 
     Returns:
-        A boolean to succed or fail and create two files.
+        A boolean to success or fail and create two files.
 
     """
     # A list of strings from "1" to "9" is created

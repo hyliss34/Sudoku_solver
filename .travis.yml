@@ -2,8 +2,9 @@
 language: python
 sudo: enabled
 python:
-  - "3.6"
-  - "3.7-dev"
+  - 3.4
+  - 3.6
+  - 3.7-dev
 
 before_install:
   - echo 'start'
@@ -16,8 +17,14 @@ before_install:
 
 install:
   - pip install -r requirements.txt
+  - pip install coverage
 
 script:
   - python -m unittest tests/full_test.py
-  - cd doc
-  - make html
+  - coverage run -m unittest tests/full_test.py
+
+after_succes:
+  - coverage report
+
+script:
+  - make html-tests
