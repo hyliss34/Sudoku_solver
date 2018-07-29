@@ -22,9 +22,9 @@ install:
 script:
   - python -m unittest tests/full_test.py
   - coverage run -m unittest tests/full_test.py
+  - ls -l
+  - make html-tests
 
 after_succes:
   - coverage report
 
-script:
-  - make html-tests
