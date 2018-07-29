@@ -1,11 +1,13 @@
 
 # Import PuLP modeler functions
-from pulp import *
+import pulp
 import os
 import numpy as np
 from . import Draw_png
+from typing import Any, List
 
-def solve_sudoku(img, output_name = "sudokusolution", output_path = 'output/'):
+
+def solve_sudoku(img, output_name: str = "sudokusolution", output_path: str = 'output/') -> Any:
     """
     A sudoku solver using Linear programming module pulp.
     The solver is quite similar to the one presented in their
@@ -30,16 +32,16 @@ def solve_sudoku(img, output_name = "sudokusolution", output_path = 'output/'):
     Cols = Sequence
 
     # The boxes list is created, with the row and column index of each square in each box
-    Boxes = []
+    Boxes: List[Any] = []
     for i in range(3):
         for j in range(3):
             Boxes += [[(Rows[3 * i + k], Cols[3 * j + l]) for k in range(3) for l in range(3)]]
 
     # The prob variable is created to contain the problem data
-    prob = LpProblem("Sudoku Problem", LpMinimize)
+    prob = pulp.LpProblem("Sudoku Problem", pulp.LpMinimize)
 
     # The problem variables are created
-    choices = LpVariable.dicts("Choice", (Vals, Rows, Cols), 0, 1, LpInteger)
+    choices = pulp.LpVariable.dicts("Choice", (Vals, Rows, Cols), 0, 1, pulp.LpInteger)
 
     # The arbitrary objective function is added
     prob += 0, "Arbitrary Objective Function"
@@ -47,18 +49,18 @@ def solve_sudoku(img, output_name = "sudokusolution", output_path = 'output/'):
     # A constraint ensuring that only one value can be in each square is created
     for r in Rows:
         for c in Cols:
-            prob += lpSum([choices[v][r][c] for v in Vals]) == 1, ""
+            prob += pulp.lpSum([choices[v][r][c] for v in Vals]) == 1, ""
 
     # The row, column and box constraints are added for each value
     for v in Vals:
         for r in Rows:
-            prob += lpSum([choices[v][r][c] for c in Cols]) == 1, ""
+            prob += pulp.lpSum([choices[v][r][c] for c in Cols]) == 1, ""
 
         for c in Cols:
-            prob += lpSum([choices[v][r][c] for r in Rows]) == 1, ""
+            prob += pulp.lpSum([choices[v][r][c] for r in Rows]) == 1, ""
 
         for b in Boxes:
-            prob += lpSum([choices[v][r][c] for (r, c) in b]) == 1, ""
+            prob += pulp.lpSum([choices[v][r][c] for (r, c) in b]) == 1, ""
 
     # The starting numbers are entered as constraints
     for i in range(img.shape[0]):
@@ -86,16 +88,16 @@ def solve_sudoku(img, output_name = "sudokusolution", output_path = 'output/'):
     for i in range(50):
         prob.solve()
         # The status of the solution is printed to the screen
-        print("Status:", LpStatus[prob.status])
+        print("Status:", pulp.LpStatus[prob.status])
         # The solution is printed if it was deemed "optimal" i.e met the constraints
-        if LpStatus[prob.status] == "Optimal":
+        if pulp.LpStatus[prob.status] == "Optimal":
             # The solution is written to the sudokuout.txt file
             for r in Rows:
                 if r == "1" or r == "4" or r == "7":
                     sudokuout.write("+-------+-------+-------+\n")
                 for c in Cols:
                     for v in Vals:
-                        if value(choices[v][r][c]) == 1:
+                        if pulp.value(choices[v][r][c]) == 1:
                             if c == "1" or c == "4" or c == "7":
                                 sudokuout.write("| ")
                             sudokuout.write(v + " ")
@@ -105,10 +107,10 @@ def solve_sudoku(img, output_name = "sudokusolution", output_path = 'output/'):
             sudokuout.write("+-------+-------+-------+\n\n")
             return True
         else:
-            prob += lpSum([choices[v][r][c] for v in Vals
+            prob += pulp.lpSum([choices[v][r][c] for v in Vals
                            for r in Rows
                            for c in Cols
-                           if value(choices[v][r][c]) == 1]) <= 80
+                           if pulp.value(choices[v][r][c]) == 1]) <= 80
     return False
     sudokuout.close()
     Draw_png.construct_grid_image(data, output_path+output_name + ".png")
