@@ -17,13 +17,11 @@ before_install:
 
 install:
   - pip install -r requirements.txt
-  - pip install coverage
 
 script:
   - python -m unittest tests/full_test.py
   - coverage run -m unittest tests/full_test.py
-  - ls -l
-  - make html-tests
+  - make html-test
 
 after_succes:
   - coverage report
