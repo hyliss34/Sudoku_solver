@@ -6,7 +6,7 @@ coverage==4.5.1
 docutils==0.14
 idna==2.7
 imagesize==1.0.0
-Jinja2==2.10
+Jinja2==2.11.3
 MarkupSafe==1.0
 numpy==1.15.0
 opencv-python==3.4.2.17
