@@ -14,7 +14,7 @@ packaging==17.1
 Pillow==5.2.0
 pockets==0.6.2
 PuLP==1.6.8
-Pygments==2.2.0
+Pygments==2.7.4
 pyocr==0.5.2
 pyparsing==2.2.0
 pypng==0.0.18
